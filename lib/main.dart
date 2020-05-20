@@ -41,10 +41,10 @@ class MyApp extends StatelessWidget {
 final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
 final SnackBar snackBar = const SnackBar(content: Text('Информация'));
 
-File _image;
 
 
-Future<void> getImage() async {
+
+Future<void> getImage1() async {
   int intnumber = 0;
   File image = await ImagePicker.pickImage(source: ImageSource.camera);
 
@@ -151,8 +151,42 @@ class viewimage extends StatefulWidget {
 
 class _viewimageState extends State<viewimage> {
 
+    int tmpI = 0;
+
+  void getImage() async {
+    int intnumber = 0;
+    File image = await ImagePicker.pickImage(source: ImageSource.camera);
 
 
+
+    final File file = new File('$path/my_file.txt');
+    if(!file.existsSync())
+    {
+      print("file not found, creating file");
+      File file = new File('$path/my_file.txt');
+      await file.writeAsString('create');
+      await file.copy('$path/my_file.txt');
+      await file.writeAsString('0');
+    }
+
+
+
+    String number = await file.readAsString();
+    intnumber = int.parse(number);
+    intnumber++;
+
+    await image.copy('$path/Pictures/$intnumber.jpg');
+    await file.copy('$path/my_file.txt');
+
+    await file.writeAsString('$intnumber');
+
+    setState(() {
+      tmpI++;
+      print(tmpI);
+    });
+
+
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -161,7 +195,7 @@ class _viewimageState extends State<viewimage> {
     return Scaffold(
 
         floatingActionButton: FloatingActionButton(
-          onPressed: () {
+          onPressed: ()  {
             getImage(); //функция для получения и сохранения новой фотографии, после её работы как раз нужно обновить список с фотографиями
 
           },
@@ -169,11 +203,11 @@ class _viewimageState extends State<viewimage> {
           backgroundColor: Colors.blue,
         ),
       body: new ListView.builder(itemBuilder: (context, i) {
-        if (i<3) { // 3 потому что у меня в данный момент сохранено 3 фото, потом тут будет переменная в которой будет содержать количетсво фото
-          print('$i i');
+        if (i<tmpI) { // 3 потому что у меня в данный момент сохранено 3 фото, потом тут будет переменная в которой будет содержать количетсво фото
+          print('$tmpI tmpI');
           File tempImage = File('$path/Pictures/${i+1}.jpg');
 
-          return new ListTile(title: new Image.file(tempImage),);
+          return new ListTile(title: new Image.file(tempImage,width: 50,));
                 }
       }
 

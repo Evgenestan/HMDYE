@@ -2,6 +2,8 @@
 
 A new Flutter application.
 
+/lib/main.dart
+
 ## Getting Started
 
 This project is a starting point for a Flutter application.

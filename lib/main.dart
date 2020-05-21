@@ -9,12 +9,11 @@ import 'dart:io';
 import 'dart:async';
 import 'package:path_provider/path_provider.dart';
 
-String path = "/storage/emulated/0/Android/data/com.example.flutterappfirst/files"; // дикий костыль, тут проблема так же упирается в то, что я не до конца понимаю как работать с асинхронными функциями и в итоге путь требуется раньше, чем заканчивает работу асинхронная функция
+String path =
+    "/storage/emulated/0/Android/data/com.example.flutterappfirst/files"; // дикий костыль, тут проблема так же упирается в то, что я не до конца понимаю как работать с асинхронными функциями и в итоге путь требуется раньше, чем заканчивает работу асинхронная функция
 void getPath() async {
   Directory tempDir = await getExternalStorageDirectory();
   path = tempDir.path.toString();
-
-
 }
 
 void main() {
@@ -28,7 +27,6 @@ void main() {
 class MyApp extends StatelessWidget {
   static const String _title = 'Сколько ты съел';
 
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -41,26 +39,18 @@ class MyApp extends StatelessWidget {
 final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
 final SnackBar snackBar = const SnackBar(content: Text('Информация'));
 
-
-
-
 Future<void> getImage1() async {
   int intnumber = 0;
   File image = await ImagePicker.pickImage(source: ImageSource.camera);
 
-
-
   final File file = new File('$path/my_file.txt');
-  if(!file.existsSync())
-  {
+  if (!file.existsSync()) {
     print("file not found, creating file");
     File file = new File('$path/my_file.txt');
     await file.writeAsString('create');
     await file.copy('$path/my_file.txt');
     await file.writeAsString('0');
   }
-
-
 
   String number = await file.readAsString();
   intnumber = int.parse(number);
@@ -70,14 +60,7 @@ Future<void> getImage1() async {
   await file.copy('$path/my_file.txt');
 
   await file.writeAsString('$intnumber');
-
-
-
-
 }
-
-
-
 
 void openPage(BuildContext context) {
   Navigator.push(context, MaterialPageRoute(
@@ -97,20 +80,12 @@ void openPage(BuildContext context) {
   ));
 }
 
-
-
-
 /// This is the stateless widget that the main application instantiates.
 class MyStatelessWidget extends StatelessWidget {
   MyStatelessWidget({Key key}) : super(key: key);
 
-
-
-
   @override
   Widget build(BuildContext context) {
-
-
     return Scaffold(
       key: scaffoldKey,
       appBar: AppBar(
@@ -130,46 +105,33 @@ class MyStatelessWidget extends StatelessWidget {
               openPage(context);
             },
           ),
-
         ],
       ),
-
-
-      body: Center(
-        child: new viewimage()
-       ),
+      body: Center(child: new viewimage()),
     );
   }
 }
 
-
 class viewimage extends StatefulWidget {
   @override
   State<viewimage> createState() => _viewimageState();
-
 }
 
 class _viewimageState extends State<viewimage> {
-
-    int tmpI = 0;
+  int tmpI = 0;
 
   void getImage() async {
     int intnumber = 0;
     File image = await ImagePicker.pickImage(source: ImageSource.camera);
 
-
-
     final File file = new File('$path/my_file.txt');
-    if(!file.existsSync())
-    {
+    if (!file.existsSync()) {
       print("file not found, creating file");
       File file = new File('$path/my_file.txt');
       await file.writeAsString('create');
       await file.copy('$path/my_file.txt');
       await file.writeAsString('0');
     }
-
-
 
     String number = await file.readAsString();
     intnumber = int.parse(number);
@@ -184,36 +146,30 @@ class _viewimageState extends State<viewimage> {
       tmpI++;
       print(tmpI);
     });
-
-
   }
 
   @override
   Widget build(BuildContext context) {
-
-
     return Scaffold(
-
         floatingActionButton: FloatingActionButton(
-          onPressed: ()  {
+          onPressed: () {
             getImage(); //функция для получения и сохранения новой фотографии, после её работы как раз нужно обновить список с фотографиями
-
           },
           child: Icon(Icons.camera_alt),
           backgroundColor: Colors.blue,
         ),
-      body: new ListView.builder(itemBuilder: (context, i) {
-        if (i<tmpI) { // 3 потому что у меня в данный момент сохранено 3 фото, потом тут будет переменная в которой будет содержать количетсво фото
-          print('$tmpI tmpI');
-          File tempImage = File('$path/Pictures/${i+1}.jpg');
+        body: new ListView.builder(itemBuilder: (context, i) {
+          if (i < tmpI) {
+            // 3 потому что у меня в данный момент сохранено 3 фото, потом тут будет переменная в которой будет содержать количетсво фото
+            print('$tmpI tmpI');
+            File tempImage = File('$path/Pictures/${i + 1}.jpg');
 
-          return new ListTile(title: new Image.file(tempImage,width: 50,));
-                }
-      }
-
-      )
-    );
+            return new ListTile(
+                title: new Image.file(
+              tempImage,
+              width: 50,
+            ));
+          }
+        }));
   }
 }
-
-

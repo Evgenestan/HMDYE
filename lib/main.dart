@@ -3,11 +3,13 @@
 // This sample shows an [AppBar] with two simple actions. The first action
 // opens a [SnackBar], while the second action navigates to a new page.
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'dart:async';
 import 'package:path_provider/path_provider.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 String path =
     "/storage/emulated/0/Android/data/com.example.flutterappfirst/files"; // дикий костыль, тут проблема так же упирается в то, что я не до конца понимаю как работать с асинхронными функциями и в итоге путь требуется раньше, чем заканчивает работу асинхронная функция
@@ -118,32 +120,49 @@ class viewimage extends StatefulWidget {
 }
 
 class _viewimageState extends State<viewimage> {
+  final File filetext = new File('$path/my_file.txt');
   int tmpI = 0;
 
-  void getImage() async {
-    int intnumber = 0;
-    File image = await ImagePicker.pickImage(source: ImageSource.camera);
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
 
-    final File file = new File('$path/my_file.txt');
-    if (!file.existsSync()) {
-      print("file not found, creating file");
-      File file = new File('$path/my_file.txt');
-      await file.writeAsString('create');
-      await file.copy('$path/my_file.txt');
-      await file.writeAsString('0');
-    }
+    gettmpI();
+  }
 
-    String number = await file.readAsString();
-    intnumber = int.parse(number);
-    intnumber++;
-
-    await image.copy('$path/Pictures/$intnumber.jpg');
-    await file.copy('$path/my_file.txt');
-
-    await file.writeAsString('$intnumber');
+  void gettmpI() async {
+    String number = await filetext.readAsString();
 
     setState(() {
-      tmpI++;
+      tmpI = int.parse(number);
+      print('tmpI= $tmpI');
+    });
+  }
+
+  void getImage() async {
+    File image = await ImagePicker.pickImage(source: ImageSource.camera);
+
+    //final File filetext = new File('$path/my_file.txt');
+    if (!filetext.existsSync()) {
+      print("file not found, creating file");
+      //File file = new File('$path/my_file.txt');
+      await filetext.writeAsString('create');
+      await filetext.copy('$path/my_file.txt');
+      await filetext.writeAsString('0');
+    }
+
+    /*String number = await filetext.readAsString();
+    tmpI = int.parse(number);*/
+    tmpI++;
+
+    await image.copy('$path/Pictures/$tmpI.jpg');
+    //await filetext.copy('$path/my_file.txt');
+
+    await filetext.writeAsString('$tmpI');
+
+    setState(() {
+      tmpI;
       print(tmpI);
     });
   }
@@ -165,10 +184,23 @@ class _viewimageState extends State<viewimage> {
             File tempImage = File('$path/Pictures/${i + 1}.jpg');
 
             return new ListTile(
-                title: new Image.file(
-              tempImage,
-              width: 50,
+                title: Row(
+              children: <Widget>[
+                new Image.file(
+                  tempImage,
+                  height: 200,
+                ),
+                Expanded(
+                  child: new Text('подпись ${i + 1}',
+                      textAlign: TextAlign.center,
+                      style: GoogleFonts.kanit(
+                        fontSize: 30,
+                      )),
+                )
+              ],
             ));
+          } else {
+            return null;
           }
         }));
   }

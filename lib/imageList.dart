@@ -27,14 +27,22 @@ class eat {
 }
 
 class viewimage extends StatefulWidget {
+  int day = new DateTime.now().day;
+  int month = new DateTime.now().month;
+  int year = new DateTime.now().year;
+
   @override
   State<viewimage> createState() => _viewimageState();
 }
 
 class _viewimageState extends State<viewimage> {
+  var now = new DateTime.now().toIso8601String();
+
   String path;
+  String imagePath = "";
   File filetext;
   int tmpI = 0;
+  String text = "";
 
   @override
   Widget build(BuildContext context) {
@@ -49,9 +57,17 @@ class _viewimageState extends State<viewimage> {
         ),
         body: new ListView.builder(itemBuilder: (context, i) {
           if (i < tmpI) {
-            // 3 потому что у меня в данный момент сохранено 3 фото, потом тут будет переменная в которой будет содержать количетсво фото
+            readDB(i).then((eat result) {
+              if (text == "" && imagePath == "") {
+                setState(() {
+                  text = result.text;
+                  imagePath = result.image_path;
+                });
+              }
+            });
+
             print('$tmpI tmpI');
-            File tempImage = File('$path/Pictures/${i + 1}.jpg');
+            File tempImage = File(imagePath);
 
             return new ListTile(
                 title: Row(
@@ -61,7 +77,7 @@ class _viewimageState extends State<viewimage> {
                   height: 200,
                 ),
                 Expanded(
-                  child: new Text('подпись ${i + 1}',
+                  child: new Text(text,
                       textAlign: TextAlign.center,
                       style: GoogleFonts.kanit(
                         fontSize: 30,

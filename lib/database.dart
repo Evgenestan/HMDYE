@@ -38,7 +38,7 @@ void insertDB(int id, String path, String text) async {
   print('DB');
 }
 
-void readDB(int id) async {
+Future<eat> readDB(int id) async {
   final database = openDatabase(
     join(await getDatabasesPath(), 'eat_app.db'),
     onCreate: (db, version) {
@@ -49,16 +49,19 @@ void readDB(int id) async {
     version: 1,
   );
 
-  void read(int id) async {
+  Future<eat> read(int id) async {
     final Database db = await database;
 
     final List<Map<String, dynamic>> maps =
-        await db.query('eat', where: "id = ?", whereArgs: [id]);
+        await db.query('eat');
     var res = eat(
-        id: maps[0]['id'],
-        image_path: maps[0]['image_path'],
-        text: maps[0]['text']);
+        id: maps[id]['id'],
+        image_path: maps[id]['image_path'],
+        text: maps[id]['text']);
     print('path from DB = ${res.image_path}');
+
+    return res;
+
 
     /* return List.generate(maps.length, (i) {
       return eat(
@@ -69,7 +72,9 @@ void readDB(int id) async {
     });*/
   }
 
-  read(id);
+
+  return read(id);
+
 
   print('DB');
 }

@@ -28,7 +28,7 @@ String path;
 
 final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
 
-final SnackBar snackBar = const SnackBar(content: Text('Информация'));
+final SnackBar snackBar = const SnackBar(content: Text('Приложение создано для помощи в отслеживании количества еды'));
 
 void getPath() async {
   Directory tempDir = await getExternalStorageDirectory();
@@ -39,27 +39,14 @@ void getPath() async {
   print('SharedPreferens path = $path');
 }
 
-void openPage(BuildContext context) {
-  Navigator.push(context, MaterialPageRoute(
-    builder: (BuildContext context) {
-      return Scaffold(
-        appBar: AppBar(
-          title: const Text('Вторая страница'),
-        ),
-        body: const Center(
-          child: Text(
-            'This is the next page',
-            style: TextStyle(fontSize: 24),
-          ),
-        ),
-      );
-    },
-  ));
-}
+
+
+
+
 
 /// This Widget is the main application widget.
 class MyApp extends StatelessWidget {
-  static const String _title = 'Сколько ты съел';
+  static const String _title = 'Food counter';
 
   @override
   Widget build(BuildContext context) {
@@ -79,7 +66,7 @@ class MyStatelessWidget extends StatelessWidget {
     return Scaffold(
       key: scaffoldKey,
       appBar: AppBar(
-        title: const Text('Главная'),
+        title: const Text('Your food'),
         actions: <Widget>[
           IconButton(
             icon: const Icon(Icons.info),
@@ -88,13 +75,7 @@ class MyStatelessWidget extends StatelessWidget {
               scaffoldKey.currentState.showSnackBar(snackBar);
             },
           ),
-          IconButton(
-            icon: const Icon(Icons.navigate_next),
-            tooltip: 'Далее',
-            onPressed: () {
-              openPage(context);
-            },
-          ),
+
         ],
       ),
       body: Center(child: new viewimage()),
